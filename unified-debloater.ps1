@@ -30,13 +30,14 @@ $filterLabel.Size = New-Object System.Drawing.Size(40, 25)
 $filterLabel.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
 $filterPanel.Controls.Add($filterLabel)
 
-$btnAll = New-Object System.Windows.Forms.Button; $btnAll.Text = "Semua"; $btnAll.Size = New-Object System.Drawing.Size(60, 25); $btnAll.Tag = "all"
-$btnBloat = New-Object System.Windows.Forms.Button; $btnBloat.Text = "Bloatware"; $btnBloat.Size = New-Object System.Drawing.Size(75, 25); $btnBloat.Tag = "bloat"
-$btnSystem = New-Object System.Windows.Forms.Button; $btnSystem.Text = "System"; $btnSystem.Size = New-Object System.Drawing.Size(60, 25); $btnSystem.Tag = "system"
-$btnThird = New-Object System.Windows.Forms.Button; $btnThird.Text = "Third Party"; $btnThird.Size = New-Object System.Drawing.Size(80, 25); $btnThird.Tag = "third"
-$btnGoogle = New-Object System.Windows.Forms.Button; $btnGoogle.Text = "Google"; $btnGoogle.Size = New-Object System.Drawing.Size(65, 25); $btnGoogle.Tag = "google"
+$btnAll = New-Object System.Windows.Forms.Button; $btnAll.Text = "Semua"; $btnAll.Size = New-Object System.Drawing.Size(55, 25); $btnAll.Tag = "all"
+$btnBloat = New-Object System.Windows.Forms.Button; $btnBloat.Text = "Bloatware"; $btnBloat.Size = New-Object System.Drawing.Size(70, 25); $btnBloat.Tag = "bloat"
+$btnThird = New-Object System.Windows.Forms.Button; $btnThird.Text = "Aplikasi"; $btnThird.Size = New-Object System.Drawing.Size(65, 25); $btnThird.Tag = "third"
+$btnSystem = New-Object System.Windows.Forms.Button; $btnSystem.Text = "System"; $btnSystem.Size = New-Object System.Drawing.Size(55, 25); $btnSystem.Tag = "system"
+$btnGoogle = New-Object System.Windows.Forms.Button; $btnGoogle.Text = "Google"; $btnGoogle.Size = New-Object System.Drawing.Size(55, 25); $btnGoogle.Tag = "google"
+$btnCritical = New-Object System.Windows.Forms.Button; $btnCritical.Text = "Critical"; $btnCritical.Size = New-Object System.Drawing.Size(55, 25); $btnCritical.Tag = "critical"
 
-foreach ($b in @($btnAll, $btnBloat, $btnSystem, $btnThird, $btnGoogle)) {
+foreach ($b in @($btnAll, $btnBloat, $btnThird, $btnSystem, $btnGoogle, $btnCritical)) {
     $b.BackColor = "LightGray"
     $b.Add_Click({ Set-Filter $this.Tag })
     $filterPanel.Controls.Add($b)
@@ -93,15 +94,16 @@ $logBox.BackColor = "Black"
 $logBox.ForeColor = "Lime"
 $form.Controls.Add($logBox)
 
-$bloatPatterns = @{
+    $bloatPatterns = @{
     "xiaomi" = @("analytics", "bugreport", "miservice", "micloudsync", "msa", "daemon", "securityadd",
-                 "cleanmaster", "voiceassist", "adSolution", "personalassistant", "touchassistant",
-                 "mipicks", "midrop", "glgm", "payment", "market", "shop", "game")
+                 "cleanmaster", "voiceassist", "adsolution", "personalassistant", "touchassistant",
+                 "mipicks", "midrop", "glgm", "payment", "market", "shop", "game", "wallet",
+                 "com.xiaomi.glgm", "com.xiaomi.mipicks", "com.miui.notes")
     "samsung" = @("bixby", "knox", "samsungpay", "samsungpass", "samsunghealth", "samsungkids",
                   "smartthings", "findmymobile", "gameoptimizing", "gamelancher", "facebook",
                   "arzone", "bixbyvoice", "bixbyvision", "dex", "sidesync", "svoice", "chaton")
     "oppo" = @("heytap", "coloros", "browser", "gamecenter", "joycenter", "appstore", "backup",
-               "music", "video", "themestore", "pay", "assistant", "clond", "cloud", "compass")
+               "music", "video", "themestore", "pay", "assistant", "cloud", "compass")
     "vivo" = @("vivo", "jovi", "appstore", "gamecenter", "ibrowser", "video", "music", "easyshare",
                "vcloud", "vnote", "vcalendar", "vivoassistant", "vivoshell")
     "realme" = @("realme", "heytap", "browser", "gamecenter", "appstore", "music", "video", "theme",
@@ -112,13 +114,29 @@ $bloatPatterns = @{
                  "google.android.apps.tachyon", "google.android.apps.docs", "google.android.apps.sheets",
                  "google.android.apps.slides", "google.android.gm", "google.android.youtube",
                  "google.android.videos", "google.android.music", "google.android.printservice",
-                 "google.android.feedback", "google.android.partnersetup", "google.android.onetimeinitializer")
+                 "google.android.feedback", "google.android.partnersetup", "google.android.onetimeinitializer",
+                 "google.android.apps.wellbeing", "google.android.apps.nbu.files")
     "meta" = @("facebook.katana", "facebook.orca", "facebook.lite", "facebook.system",
-               "facebook.appmanager", "facebook.services", "instagram", "whatsapp")
+               "facebook.appmanager", "facebook.services", "instagram", "whatsapp", "com.whatsapp")
     "microsoft" = @("microsoft.office", "microsoft.word", "microsoft.excel", "microsoft.powerpoint",
                     "microsoft.onedrive", "microsoft.teams", "microsoft.skype", "microsoft.launcher",
                     "microsoft.edge", "microsoft.bing", "microsoft.news", "microsoft.people")
 }
+
+$criticalSystem = @(
+    "android", "com.android.phone", "com.android.settings", "com.android.systemui",
+    "com.android.launcher", "com.android.providers.settings", "com.android.providers.contacts",
+    "com.android.providers.calendar", "com.android.providers.downloads", "com.android.providers.media",
+    "com.android.packageinstaller", "com.android.inputmethod.latin", "com.android.bluetooth",
+    "com.android.cellbroadcastreceiver", "com.android.server.telecom", "com.android.wifi",
+    "com.android.nfc", "com.android.se", "com.android.shell", "com.android.defcontainer",
+    "com.android.vpndialogs", "com.android.captiveportallogin", "com.android.keychain",
+    "com.android.printspooler", "com.android.documentsui", "com.android.externalstorage",
+    "com.android.deskclock", "com.android.calendar", "com.android.contacts", "com.android.dialer",
+    "com.android.messaging", "com.android.camera2", "com.android.gallery3d",
+    "com.google.android.gms", "com.google.android.gsf", "com.google.android.play.games",
+    "com.android.vending"
+)
 
 function Get-DeviceInfo {
     $brand = (adb shell getprop ro.product.brand 2>$null).Trim()
@@ -170,7 +188,10 @@ function Get-Category {
     if ($lower -match "google\.android\." -or $lower -match "\.google\.") { return "google" }
     if ($lower -match "facebook|instagram|whatsapp") { return "meta" }
     if ($lower -match "microsoft\.") { return "microsoft" }
+    if ($lower -match "miui\.|xiaomi\.") { return "system" }
     if ($lower -match [regex]::Escape($brand)) { return "system" }
+    if ($lower -match "^com\.android\." -or $lower -match "^android\.") { return "system" }
+    if ($lower -match "^com\.qualcomm\|^com\.mediatek\|^com\.broadcom") { return "system" }
     
     return "third"
 }
@@ -183,10 +204,16 @@ function Render-Packages {
     
     $y = 5
     $lastCat = ""
+    $catCount = @{}
+    foreach ($pkg in $packages) {
+        $c = if ($pkg.IsBloat) { "bloatware" } else { $pkg.Category }
+        if (-not $catCount.ContainsKey($c)) { $catCount[$c] = 0 }
+        $catCount[$c]++
+    }
     
     foreach ($pkg in $packages) {
-        $cat = Get-Category $pkg.Name $pkg.Brand
-        if ($pkg.IsBloat) { $cat = "bloatware" }
+        $cat = if ($pkg.IsBloat) { "bloatware" } else { $pkg.Category }
+        if ($pkg.IsCritical -and -not $pkg.IsBloat) { $cat = "critical" }
         
         if ($cat -ne $lastCat) {
             $catColor = switch ($cat) {
@@ -195,10 +222,11 @@ function Render-Packages {
                 "meta" { "DarkViolet" }
                 "microsoft" { "SteelBlue" }
                 "system" { "DarkOrange" }
+                "critical" { "DimGray" }
                 default { "Gray" }
             }
             $catLabel = New-Object System.Windows.Forms.Label
-            $catLabel.Text = "--- $cat ---  ($($packages | Where-Object { (Get-Category $_.Name $_.Brand) -eq $cat -or ($_.IsBloat -and $cat -eq "bloatware") } | Measure-Object).Count)"
+            $catLabel.Text = "--- $cat ($($catCount[$cat])) ---"
             $catLabel.Location = New-Object System.Drawing.Point(5, $y)
             $catLabel.Size = New-Object System.Drawing.Size(720, 22)
             $catLabel.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
@@ -209,16 +237,23 @@ function Render-Packages {
         }
         
         $cb = New-Object System.Windows.Forms.CheckBox
-        $status = if ($pkg.Disabled) { "[DISABLED] " } else { "" }
-        $cb.Text = "$status$($pkg.Label)  ($($pkg.Name))"
+        $status = if ($pkg.Disabled) { "[DISABLED] " } else { "[ENABLED] " }
+        $icon = if ($pkg.IsBloat) { "[!] " } elseif ($pkg.IsCritical) { "[SYS] " } else { "     " }
+        $cb.Text = "$icon$status$($pkg.Label)  ($($pkg.Name))"
         $cb.Location = New-Object System.Drawing.Point(20, $y)
-        $cb.Size = New-Object System.Drawing.Size(710, 20)
+        $cb.Size = New-Object System.Drawing.Size(720, 20)
         $cb.Tag = $pkg.Name
         $cb.Font = New-Object System.Drawing.Font("Consolas", 8)
         
-        if ($pkg.IsBloat) { $cb.Checked = $true; $cb.ForeColor = "Red" }
-        elseif ($cat -eq "third") { $cb.Checked = $false; $cb.ForeColor = "Green" }
-        else { $cb.Checked = $false; $cb.ForeColor = "Black" }
+        if ($pkg.IsCritical -and -not $pkg.IsBloat) {
+            $cb.Checked = $false; $cb.Enabled = $false; $cb.ForeColor = "DimGray"
+        } elseif ($pkg.Disabled) {
+            $cb.Checked = $false; $cb.ForeColor = "DarkGray"
+        } elseif ($pkg.IsBloat) {
+            $cb.Checked = $true; $cb.ForeColor = "Red"
+        } else {
+            $cb.Checked = $false; $cb.ForeColor = "Green"
+        }
         
         $checkPanel.Controls.Add($cb)
         $checkboxes[$pkg.Name] = $cb
@@ -231,9 +266,10 @@ function Set-Filter {
     $script:currentFilter = $filter
     $visible = switch ($filter) {
         "bloat" { $filteredPackages | Where-Object { $_.IsBloat } }
-        "system" { $filteredPackages | Where-Object { (Get-Category $_.Name $_.Brand) -eq "system" } }
-        "third" { $filteredPackages | Where-Object { (Get-Category $_.Name $_.Brand) -eq "third" -and -not $_.IsBloat } }
+        "system" { $filteredPackages | Where-Object { $_.Category -eq "system" -and -not $_.IsCritical } }
+        "third" { $filteredPackages | Where-Object { $_.Category -eq "third" -and -not $_.IsBloat -and -not $_.IsCritical } }
         "google" { $filteredPackages | Where-Object { $_.google } }
+        "critical" { $filteredPackages | Where-Object { $_.IsCritical } }
         default { $filteredPackages }
     }
     
@@ -248,7 +284,7 @@ function Set-Filter {
         }
     }
     
-    foreach ($b in @($btnAll, $btnBloat, $btnSystem, $btnThird, $btnGoogle)) {
+    foreach ($b in @($btnAll, $btnBloat, $btnThird, $btnSystem, $btnGoogle, $btnCritical)) {
         $b.BackColor = if ($b.Tag -eq $filter) { "DodgerBlue"; $b.ForeColor = "White" } else { "LightGray"; $b.ForeColor = "Black" }
     }
 }
@@ -270,15 +306,20 @@ function Refresh-Device {
     $header.Text = "$($devInfo.Brand) $($devInfo.Model) | Android $($devInfo.Android)"
     if ($devInfo.MIUI) { $header.Text += " | MIUI $($devInfo.MIUI)" }
     
-    $infoLabel.Text = "Scanning packages (this may take a moment)..."
+    $infoLabel.Text = "Scanning ALL packages (this may take a while)..."
     [System.Windows.Forms.Application]::DoEvents()
     
-    # Get all 3rd-party packages
-    $rawPkgs = adb shell pm list packages -3 2>$null
+    # Get ALL packages (including system)
+    $rawPkgs = adb shell pm list packages 2>$null
     $rawDisabled = adb shell pm list packages --disabled 2>$null
+    $rawEnabled = adb shell pm list packages --enabled 2>$null
     $disabledSet = @{}
+    $enabledSet = @{}
     if ($rawDisabled) {
-        $rawDisabled | ForEach-Object { $p = $_ -replace "package:", ""; $p = $p.Trim(); $disabledSet[$p] = $true }
+        $rawDisabled | ForEach-Object { $p = ($_ -replace "package:", "").Trim(); if ($p) { $disabledSet[$p] = $true } }
+    }
+    if ($rawEnabled) {
+        $rawEnabled | ForEach-Object { $p = ($_ -replace "package:", "").Trim(); if ($p) { $enabledSet[$p] = $true } }
     }
     
     $script:allPackages = @()
@@ -290,24 +331,25 @@ function Refresh-Device {
             $pkgName = ($line -replace "package:", "").Trim()
             if (-not $pkgName) { continue }
             
-            # Simple label from package name
             $label = $pkgName -replace ".*\.", ""
-            
             $isBloat = Test-Bloatware $pkgName $brand
             $isDisabled = $disabledSet.ContainsKey($pkgName)
+            $isCritical = $criticalSystem -contains $pkgName -or $pkgName -match "^com\.android\." -or $pkgName -match "^com\.google\.android\.gms"
+            $cat = Get-Category $pkgName $brand
             
             $script:allPackages += @{
                 Name = $pkgName
                 Label = $label
-                Size = 0
                 IsBloat = $isBloat
                 Disabled = $isDisabled
+                IsCritical = $isCritical
                 Brand = $brand
-                google = (Get-Category $pkgName $brand) -eq "google"
+                Category = $cat
+                google = $cat -eq "google"
             }
             
             $i++
-            if ($i % 20 -eq 0) {
+            if ($i % 50 -eq 0) {
                 $infoLabel.Text = "Scanning... $i / $total packages"
                 [System.Windows.Forms.Application]::DoEvents()
             }
@@ -315,7 +357,7 @@ function Refresh-Device {
     }
     
     # Sort: bloatware first, then by category
-    $script:allPackages = $script:allPackages | Sort-Object { -([int]$_.IsBloat) }, { $_.google -eq $true }, Name
+    $script:allPackages = $script:allPackages | Sort-Object { -([int]$_.IsBloat) }, { $_.IsCritical }, Category, Name
     $script:filteredPackages = $script:allPackages
     
     Render-Packages $script:filteredPackages
@@ -323,8 +365,9 @@ function Refresh-Device {
     $total = $allPackages.Count
     $bloatCount = ($allPackages | Where-Object { $_.IsBloat }).Count
     $disabledCount = ($allPackages | Where-Object { $_.Disabled }).Count
-    $logBox.Text = "Total: $total packages | Bloatware terdeteksi: $bloatCount | Sudah di-disable: $disabledCount"
-    $infoLabel.Text = "Klik kanan pada package untuk disable/enable individual | Centang = akan di-disable"
+    $criticalCount = ($allPackages | Where-Object { $_.IsCritical }).Count
+    $logBox.Text = "Total: $total packages | Bloatware: $bloatCount | Disabled: $disabledCount | Critical (terlindung): $criticalCount"
+    $infoLabel.Text = "Item abu-abu = critical system (terlindung). Klik kanan untuk disable/enable individual."
 }
 
 # Context menu for right-click
